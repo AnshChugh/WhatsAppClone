@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp_clone/colors.dart';
+import 'package:whatsapp_clone/theme/colors.dart';
 import 'package:whatsapp_clone/info.dart';
 import 'package:whatsapp_clone/widgets/chat_list.dart';
 
@@ -14,7 +14,7 @@ class MobileChatScreen extends StatelessWidget {
         centerTitle: false,
         title: Text(
           info[0]['name'].toString(),
-          style: TextStyle(
+          style: const TextStyle(
               color: appBarTextColor,
               fontSize: 20,
               fontWeight: FontWeight.bold),
