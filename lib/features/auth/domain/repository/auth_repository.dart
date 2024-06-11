@@ -8,5 +8,5 @@ abstract interface class AuthRepository {
       {required BuildContext context,
         required String phoneNumber});
 
-  Future<Either<Failure, User?>> currentUser();
+  Future<Either<Failure, User>> currentUser();
 }

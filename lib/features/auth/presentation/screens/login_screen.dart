@@ -1,5 +1,7 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:whatsapp_clone/core/common/widgets/custom_button.dart';
+import 'package:whatsapp_clone/core/utils/show_snackbar.dart';
 import 'package:whatsapp_clone/theme/colors.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,6 +18,15 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     super.dispose();
     phoneController.dispose();
+  }
+
+  void signIn() {
+    String phoneNumber = phoneController.text.trim();
+    if (_country != null && phoneNumber.isNotEmpty) {
+      showSnackBar(context, 'done');
+    } else {
+      showSnackBar(context, 'Fill out all the fields');
+    }
   }
 
   @override
@@ -77,7 +88,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                 ],
-              )
+              ),
+              SizedBox(
+                height: size.height * 0.6,
+              ),
+              SizedBox(
+                  width: size.width * 0.2,
+                  child: CustomButton(buttonText: 'Next', onTap: signIn))
             ],
           ),
         ),
