@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/core/common/entities/user.dart';
 import 'package:whatsapp_clone/core/error/failure.dart';
 import 'package:whatsapp_clone/core/usecase/usecase.dart';
@@ -5,8 +6,10 @@ import 'package:fpdart/fpdart.dart';
 import 'package:whatsapp_clone/features/auth/domain/repository/auth_repository.dart';
 
 class LoginParams {
+  BuildContext context;
   String phoneNumber;
-  LoginParams({required this.phoneNumber});
+
+  LoginParams({required this.context, required this.phoneNumber});
 }
 
 class UserLogin implements UseCase<User, LoginParams> {
@@ -15,6 +18,6 @@ class UserLogin implements UseCase<User, LoginParams> {
   @override
   Future<Either<Failure, User>> call(LoginParams params) async {
     return await authRepository.loginWithPhoneNumber(
-        phoneNumber: params.phoneNumber);
+        context: params.context, phoneNumber: params.phoneNumber);
   }
 }

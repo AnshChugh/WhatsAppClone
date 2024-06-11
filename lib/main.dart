@@ -1,12 +1,11 @@
-import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
 import 'package:whatsapp_clone/features/landing/landing_screen.dart';
-import 'package:whatsapp_clone/firebase_options.dart';
+import 'package:whatsapp_clone/init_dependencies.dart';
 import 'package:whatsapp_clone/theme/colors.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+void main() async {
+  await initDependencies();
   runApp(const MyApp());
 }
 
