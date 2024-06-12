@@ -10,3 +10,10 @@ final class AuthLogin extends AuthEvent {
 }
 
 final class AuthIsUserLoggedIn extends AuthEvent {}
+
+final class AuthVerifyOtp extends AuthEvent {
+  final BuildContext context;
+  final String verificationId;
+  final String otp;
+  AuthVerifyOtp({required this.context, required this.verificationId, required this.otp});
+}

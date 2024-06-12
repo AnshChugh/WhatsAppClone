@@ -1,14 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:whatsapp_clone/features/auth/data/models/user_model.dart';
 import 'package:whatsapp_clone/features/auth/presentation/screens/otp_screen.dart';
 
 abstract interface class AuthRemoteDataSource {
-  Future<UserModel?> signInWithPhoneNumber(
+  Future<void> signInWithPhoneNumber(
       {required BuildContext context, required String phoneNumber});
-
+  Future<void> verifyOtp(
+      {required BuildContext context,
+      required String verificationId,
+      required String otp});
   Future<UserModel?> getCurrentUserData();
 }
 
@@ -26,33 +28,34 @@ class FirebaseAuthRemoteDataSource implements AuthRemoteDataSource {
   }
 
   @override
-  Future<UserModel?> signInWithPhoneNumber(
+  Future<void> verifyOtp(
+      {required BuildContext context,
+      required String verificationId,
+      required String otp}) async {
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(
+        verificationId: verificationId, smsCode: otp);
+    await firebaseAuthInstance.signInWithCredential(credential);
+  }
+
+  @override
+  Future<void> signInWithPhoneNumber(
       {required BuildContext context, required String phoneNumber}) async {
-    PhoneAuthCredential? phoneAuthCredential;
     await firebaseAuthInstance.verifyPhoneNumber(
       phoneNumber: phoneNumber,
-      verificationCompleted: (PhoneAuthCredential phoneCredential) {
-        phoneAuthCredential = phoneCredential;
+      verificationCompleted: (PhoneAuthCredential phoneCredential) async {
+        await firebaseAuthInstance.signInWithCredential(phoneCredential);
       },
       verificationFailed: (error) {
         throw Exception(error.message);
       },
       codeSent: (verificationId, forceResendingToken) async {
-        Navigator.pushNamed(context, OtpScreen.routeName, arguments: verificationId);
-
-        // Create a PhoneAuthCredential with the code
-        // PhoneAuthCredential credential = PhoneAuthProvider.credential(
-        //     verificationId: verificationId, smsCode: smsCode);
-
-        // Sign the user in (or link) with the credential
-        // await firebaseAuthInstance.signInWithCredential(credential);
+        Navigator.pushReplacement(context, MaterialPageRoute(
+          builder: (context) {
+            return OtpScreen(verificationId: verificationId);
+          },
+        ));
       },
       codeAutoRetrievalTimeout: (verificationId) {},
     );
-    if (phoneAuthCredential == null) {
-      return null;
-    }
-    final model = UserModel(phoneNumber: phoneNumber);
-    return model;
   }
 }

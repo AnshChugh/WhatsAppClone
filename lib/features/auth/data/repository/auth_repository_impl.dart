@@ -22,20 +22,39 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<Either<Failure, User>> loginWithPhoneNumber(
-      {required BuildContext context, required String phoneNumber}) {
-    throw UnimplementedError();
+  Future<Either<Failure, void>> verifyOtp(
+      {required BuildContext context, required String verificationId, required String otp}) async {
+    try {
+      if (await connectionChecker.isConnected) {
+        
+          // ignore: use_build_context_synchronously
+            await authRemoteDataSource.verifyOtp(context: context, verificationId: verificationId, otp: otp);
+        return Right(null);
+      } else {
+        throw "No Internet Connection";
+      }
+    } catch (e) {
+      return left(Failure(message: e.toString()));
+    }
   }
 
-  Future<Either<Failure, User>> _getUser(Future<User> Function() fn) async {
+  @override
+  Future<Either<Failure, void>> loginWithPhoneNumber(
+      {required BuildContext context, required String phoneNumber}) async {
     try {
-      if (!(await connectionChecker.isConnected)) {
-        return left(Failure(message: 'No Internet Connection'));
+      if (await connectionChecker.isConnected) {
+        await Future.delayed(const Duration(milliseconds: 100));
+        authRemoteDataSource.signInWithPhoneNumber(
+            // ignore: use_build_context_synchronously
+            context: context,
+            phoneNumber: phoneNumber);
+
+        return right(null);
+      } else {
+        throw "No Internet Connection";
       }
-      final user = await fn();
-      return Right(user);
     } catch (e) {
-      return Left(Failure(message: e.toString()));
+      return left(Failure(message: e.toString()));
     }
   }
 }

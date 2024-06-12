@@ -12,12 +12,12 @@ class LoginParams {
   LoginParams({required this.context, required this.phoneNumber});
 }
 
-class UserLogin implements UseCase<User, LoginParams> {
+class UserLogin implements UseCase<void, LoginParams> {
   final AuthRepository authRepository;
   UserLogin(this.authRepository);
   @override
-  Future<Either<Failure, User>> call(LoginParams params) async {
-    return await authRepository.loginWithPhoneNumber(
+  Future<Either<Failure, void>> call(LoginParams params) async {
+     return await authRepository.loginWithPhoneNumber(
         context: params.context, phoneNumber: params.phoneNumber);
   }
 }

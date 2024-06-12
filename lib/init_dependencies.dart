@@ -11,6 +11,7 @@ import 'package:whatsapp_clone/features/auth/data/repository/auth_repository_imp
 import 'package:whatsapp_clone/features/auth/domain/repository/auth_repository.dart';
 import 'package:whatsapp_clone/features/auth/domain/usecases/current_user.dart';
 import 'package:whatsapp_clone/features/auth/domain/usecases/user_login.dart';
+import 'package:whatsapp_clone/features/auth/domain/usecases/verify_top.dart';
 import 'package:whatsapp_clone/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:whatsapp_clone/firebase_options.dart';
 
@@ -47,11 +48,13 @@ void _initAuth() {
     // use case
     ..registerFactory(() => UserLogin(serviceLocator()))
     ..registerFactory(() => CurrentUser(serviceLocator()))
+    ..registerFactory(() => UserVerifyOtp(serviceLocator()))
 
     // bloc
     ..registerLazySingleton(() => AuthBloc(
           userLogin: serviceLocator(),
           currentUser: serviceLocator(),
+          userVerifyOtp: serviceLocator(),
           appUserCubit: serviceLocator(),
         ));
 }
