@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:fpdart/fpdart.dart';
@@ -14,4 +17,9 @@ abstract interface class AuthRepository {
       required String otp});
 
   Future<Either<Failure, User>> currentUser();
+
+  Future<Either<Failure, User>> saveUserData(
+      {required String name,
+      required File? profilePic,
+      required BuildContext context});
 }

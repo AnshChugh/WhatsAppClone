@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:whatsapp_clone/core/common/cubit/app_user_cubit_cubit.dart';
 import 'package:whatsapp_clone/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:whatsapp_clone/features/auth/presentation/screens/user_information_screen.dart';
 import 'package:whatsapp_clone/features/landing/landing_screen.dart';
 import 'package:whatsapp_clone/init_dependencies.dart';
-import 'package:whatsapp_clone/theme/colors.dart';
 import 'package:whatsapp_clone/theme/theme.dart';
 
 void main() async {
@@ -45,11 +43,11 @@ class _MyAppState extends State<MyApp> {
             return state is AppUserLoggedIn;
           },
           builder: (context, isLoggedIn) {
-            // if (isLoggedIn) {
-            //   return const Scaffold(body: Text('log in'));
-            // }
-            // return const LandingScreen();
-            return const UserInformationScreen();
+            if (isLoggedIn) {
+              return const Scaffold(
+                  body: SafeArea(child: Center(child: Text('log in'))));
+            }
+            return const LandingScreen();
           },
         ));
   }

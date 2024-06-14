@@ -2,7 +2,6 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:whatsapp_clone/core/common/widgets/custom_button.dart';
-import 'package:whatsapp_clone/core/utils/show_snackbar.dart';
 import 'package:whatsapp_clone/core/utils/utils.dart';
 import 'package:whatsapp_clone/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:whatsapp_clone/theme/colors.dart';

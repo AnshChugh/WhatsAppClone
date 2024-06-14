@@ -1,7 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:whatsapp_clone/core/common/widgets/loader.dart';
 import 'package:whatsapp_clone/core/utils/utils.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:whatsapp_clone/features/auth/presentation/bloc/auth_bloc.dart';
 
 class UserInformationScreen extends StatefulWidget {
   const UserInformationScreen({super.key});
@@ -25,6 +28,11 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
     setState(() {});
   }
 
+  void saveUserData() {
+    context.read<AuthBloc>().add(
+        AuthUploadUserData(name: nameController.text.trim(), context: context));
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -34,26 +42,38 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
           alignment: Alignment.center,
           child: Column(
             children: [
-              Stack(
-                children: [
-                  CircleAvatar(
-                    backgroundImage: image == null
-                        ? const NetworkImage(
-                            'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png')
-                        : FileImage(image!),
-                    radius: 64,
-                  ),
-                  Positioned(
-                    bottom: -10,
-                    left: 80,
-                    child: IconButton(
-                        onPressed: pickImage,
-                        icon: const Icon(
-                          Icons.add_a_photo,
-                          color: Colors.white,
-                        )),
-                  )
-                ],
+              BlocConsumer<AuthBloc, AuthState>(
+                listener: (context, state) {
+                  if (state is AuthFailure) {
+                    showSnackBar(context, state.message);
+                  }
+                  if (state is AuthSucess) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                builder: (context, state) {
+                  return Stack(
+                    children: [
+                      CircleAvatar(
+                        backgroundImage: image == null
+                            ? const NetworkImage(
+                                'https://png.pngitem.com/pimgs/s/649-6490124_katie-notopoulos-katienotopoulos-i-write-about-tech-round.png')
+                            : FileImage(image!),
+                        radius: 64,
+                      ),
+                      Positioned(
+                        bottom: -10,
+                        left: 80,
+                        child: IconButton(
+                            onPressed: pickImage,
+                            icon: const Icon(
+                              Icons.add_a_photo,
+                              color: Colors.white,
+                            )),
+                      )
+                    ],
+                  );
+                },
               ),
               Row(
                 children: [
@@ -66,9 +86,8 @@ class _UserInformationScreenState extends State<UserInformationScreen> {
                           const InputDecoration(labelText: 'Enter your Name'),
                     ),
                   ),
-                  IconButton(onPressed: () {
-                    
-                  }, icon: const Icon(Icons.done))
+                  IconButton(
+                      onPressed: saveUserData, icon: const Icon(Icons.done))
                 ],
               )
             ],

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:whatsapp_clone/core/common/entities/user.dart';
 import 'package:whatsapp_clone/core/error/failure.dart';
 import 'package:whatsapp_clone/core/usecase/usecase.dart';
 import 'package:fpdart/fpdart.dart';

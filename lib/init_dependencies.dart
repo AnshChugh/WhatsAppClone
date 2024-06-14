@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
@@ -10,8 +11,9 @@ import 'package:whatsapp_clone/features/auth/data/datasource/auth_remote_data_so
 import 'package:whatsapp_clone/features/auth/data/repository/auth_repository_impl.dart';
 import 'package:whatsapp_clone/features/auth/domain/repository/auth_repository.dart';
 import 'package:whatsapp_clone/features/auth/domain/usecases/current_user.dart';
+import 'package:whatsapp_clone/features/auth/domain/usecases/save_user_data.dart';
 import 'package:whatsapp_clone/features/auth/domain/usecases/user_login.dart';
-import 'package:whatsapp_clone/features/auth/domain/usecases/verify_top.dart';
+import 'package:whatsapp_clone/features/auth/domain/usecases/verify_otp.dart';
 import 'package:whatsapp_clone/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:whatsapp_clone/firebase_options.dart';
 
@@ -23,6 +25,7 @@ Future<void> initDependencies() async {
   serviceLocator
     ..registerLazySingleton(() => FirebaseAuth.instance)
     ..registerLazySingleton(() => FirebaseFirestore.instance)
+    ..registerLazySingleton(() => FirebaseStorage.instance)
     ..registerFactory(() => InternetConnection())
     ..registerFactory<ConnectionChecker>(
         () => ConnectionCheckerImpl(serviceLocator()));
@@ -39,7 +42,8 @@ void _initAuth() {
   serviceLocator
     // datasource
     ..registerFactory<AuthRemoteDataSource>(
-      () => FirebaseAuthRemoteDataSource(serviceLocator(), serviceLocator()),
+      () => FirebaseAuthRemoteDataSource(
+          serviceLocator(), serviceLocator(), serviceLocator()),
     )
     // repository
     ..registerFactory<AuthRepository>(
@@ -49,12 +53,14 @@ void _initAuth() {
     ..registerFactory(() => UserLogin(serviceLocator()))
     ..registerFactory(() => CurrentUser(serviceLocator()))
     ..registerFactory(() => UserVerifyOtp(serviceLocator()))
+    ..registerFactory(() => SaveUserData(serviceLocator()))
 
     // bloc
     ..registerLazySingleton(() => AuthBloc(
           userLogin: serviceLocator(),
           currentUser: serviceLocator(),
           userVerifyOtp: serviceLocator(),
+          saveUserData: serviceLocator(),
           appUserCubit: serviceLocator(),
         ));
 }
